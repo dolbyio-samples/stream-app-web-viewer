@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<title>Dolby.io Millicast: Livestream Viewer</title>
+		<meta name="description" content="Livestream Viewer" />
+		<meta name="author" content="SitePoint" />
+
+		<meta property="og:title" content="Livestream Viewer" />
+		<meta property="og:type" content="website" />
+		<meta property="og:description" content="Livestream Viewer" />
+		<script src="https://cdn.jsdelivr.net/npm/@millicast/sdk@latest/dist/millicast.umd.js"></script>
+		<link rel="stylesheet" href="index.css" />
+		<link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
+	</head>
+
+	<body>
+		<a href="https://docs.dolby.io/media-apis/docs/analyze-api-guide">
+			<img src="img/dolbyio.png" alt="Dolby.io Logo" width="200px" height="100px" class="topleft" />
+		</a>
+		<h1>Dolby.io Millicast: Livestream Viewer</h1>
+		<form id="inputFormVisCont">
+			<label for="fname">Enter Livestream Account ID:</label>
+			<input type="text" id="accID" class="input_box" size="15" /><br /><br />
+			<label for="fname">Enter Livestream Name:</label>
+			<input type="text" id="streamName" class="input_box" size="21" /><br /><br />
+		</form>
+		<button id="startBtn" disabled="True" onclick="connectStream()">Start Stream</button>
+		<button id="stopBtn" disabled="True" onclick="stopStream()">Stop Stream</button>
+		<br />
+		<br />
+		<div>
+			<b id="statusBar" hidden="True" class="statusText"> Status: </b>
+			<b id="viewers" hidden="True" class="statusTime"> Viewers: </b>
+			<br />
+			<br />
+			<video width="640" height="360" hidden="True" id="videoPlayer" controls class="vidBox">
+				Your browser does not support the video playback.
+			</video>
+		</div>
+		<script src="src/millicast_viewer.js"></script>
+	</body>
+</html>

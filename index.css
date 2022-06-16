@@ -1,0 +1,75 @@
+html {
+	background: linear-gradient(to top right, black, #4b1f99);
+	background-size: cover;
+	height: 100%;
+	overflow: scroll;
+	overflow-x: hidden;
+}
+
+body {
+	font-family: sans-serif, Tahoma, Geneva, Verdana, sans-serif;
+	text-align: center;
+	padding-top: 5%;
+	background-position: center;
+	font-size: larger;
+}
+h1 {
+	color: white;
+}
+div {
+	color: white;
+}
+form {
+	color: white;
+}
+.topleft {
+	position: absolute;
+	top: 8px;
+	left: 16px;
+	font-size: 18px;
+}
+
+.vidBox {
+	background-color: black;
+	border-style: solid;
+	border-width: 10px;
+	border-color: black;
+}
+.statusText {
+	background-color: #1c87c9;
+	-webkit-border-radius: 60px;
+	border-radius: 10px;
+	border: none;
+	color: #eeeeee;
+	font-family: sans-serif;
+	font-size: 15px;
+	padding: 5px 5px;
+}
+
+@keyframes glowing {
+	0% {
+		background-color: #8b0000;
+		box-shadow: 0 0 3px #8b0000;
+	}
+	50% {
+		background-color: #ff0000;
+		box-shadow: 0 0 10px #ff0000;
+	}
+	100% {
+		background-color: #8b0000;
+		box-shadow: 0 0 3px #8b0000;
+	}
+}
+.statusText {
+	animation: glowing 3500ms infinite;
+}
+.statusTime {
+	background-color: #5f39a1;
+	-webkit-border-radius: 60px;
+	border-radius: 10px;
+	border: none;
+	color: #eeeeee;
+	font-family: sans-serif;
+	font-size: 15px;
+	padding: 5px 5px;
+}
