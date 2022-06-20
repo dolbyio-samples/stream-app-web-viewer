@@ -6,7 +6,7 @@ Supplement code for this blog here:
 A demo app for viewing an Ultra Low Latency Dolby.io Millicast Livestream in vanilla JS. 
 
 ## To Run
-The whole project is built in vanilla JS, so just clone the repo and open the index.html file.
+The whole project is built in vanilla JS, so just clone the repo and open the index.html file in browser.
 
 ![Livestream viewer image](img/livestream-demo.PNG)
 
