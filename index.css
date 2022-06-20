@@ -5,7 +5,6 @@ html {
 	overflow: scroll;
 	overflow-x: hidden;
 }
-
 body {
 	font-family: sans-serif, Tahoma, Geneva, Verdana, sans-serif;
 	text-align: center;
@@ -45,7 +44,6 @@ form {
 	font-size: 15px;
 	padding: 5px 5px;
 }
-
 @keyframes glowing {
 	0% {
 		background-color: #8b0000;

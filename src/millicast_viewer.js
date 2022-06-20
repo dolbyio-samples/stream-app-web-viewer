@@ -2,7 +2,7 @@
 // Learn More @ https://docs.millicast.com/docs/web-draft
 
 async function connectStream() {
-	// Connects the stream and does a majority of the set dressing for the app.
+	// Connects the stream and does a majority of the functionality for the app.
 	const activeSources = new Set();
 	let viewers = document.getElementById("viewers");
 	let stopBtn = document.getElementById("stopBtn");
