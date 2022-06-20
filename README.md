@@ -1,7 +1,10 @@
 # Dolby.io Millicast Livestream Viewer App
-Supliment code for this blog here:
+[![](https://data.jsdelivr.com/v1/package/npm/@millicast/sdk/badge)](https://www.jsdelivr.com/package/npm/@millicast/sdk)
+Supplement code for this blog here:
 
 A demo app for viewing a Dolby.io Millicast Livestream
+
+![Livestream viewer image](img/livestream-demo.PNG)
 
 ## To Run
 The whole project is built in vanilla JS, so just clone the repo and open the index.html file.
