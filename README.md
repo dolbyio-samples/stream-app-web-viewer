@@ -10,7 +10,7 @@ The whole project is built in vanilla JS, so just clone the repo and open the in
 
 ![Livestream viewer image](img/livestream-demo.PNG)
 
-### Learn More:
+## Learn More:
 1. [Dolby.io Millicast](https://millicast.com/)
 2. [More Dolby.io tools](https://dolby.io/)
 3. [Millicast Web SDK Documentation](https://docs.millicast.com/docs/web-draft)
