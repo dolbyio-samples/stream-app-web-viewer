@@ -16,7 +16,6 @@ async function connectStream() {
 	console.log("Joining livestream with:");
 	console.log("Account ID: " + accID);
 	console.log("Stream Name: " + streamName);
-	video.hidden = false;
 	streamBtn.disabled = true;
 	stopBtn.disabled = false;
 	inputFormVisCont.hidden = true;
@@ -35,11 +34,9 @@ async function connectStream() {
 		});
 
 	const millicastView = new window.millicast.View(streamName, tokenGenerator);
-
-	// Step 2: Adding the Stream to your <video> tag
-	millicastView.on("track", (event) => {
-		addStreamToYourVideoTag(event.streams[0]);
-	});
+	const sources = new Set();
+	// This will store a mapping: sourceId => transceiver media ids
+	const sourceIdTransceiversMap = new Map();
 
 	// Optional Step: Live updating the stream status
 	await millicastView.on("broadcastEvent", (event) => {
@@ -51,6 +48,7 @@ async function connectStream() {
 				console.log("Active Stream.");
 				statusBar.innerText = streamName + " is Live";
 				statusBar.hidden = false;
+				addStreamToYourVideoTag(data.sourceId);
 				break;
 			case "inactive":
 				activeSources.delete(data.sourceId);
@@ -65,6 +63,62 @@ async function connectStream() {
 		}
 	});
 
+	// Optional Step: Updating the Livestream latency.
+	millicastView.webRTCPeer.initStats();
+	await millicastView.webRTCPeer.on("stats", (stats) => {
+		console.log(stats);
+		viewers.innerText = "Round Trip Time: " + stats.currentRoundTripTime * 1000 + " milliseconds";
+		viewers.hidden = false;
+	});
+
+	function stopStream() {
+		//Closes Stream and resets browser.
+		location.reload();
+	}
+
+	const addStreamToYourVideoTag = async (sourceId) => {
+		// Create Media stream and create transceivers
+		const mediaStream = new MediaStream();
+		const videoTransceiver = await millicastView.addRemoteTrack("video", [mediaStream]);
+		// Optionally we can also add audio
+		const audioTransceiver = await millicastView.addRemoteTrack("audio", [mediaStream]);
+
+		// Add sourceId -> transceiver pair to the Map
+		sourceIdTransceiversMap.set(sourceId || "main", {
+			videoMediaId: videoTransceiver.mid,
+			audioMediaId: audioTransceiver.mid,
+		});
+
+		// We need to define this function, this function will render a new video tag into the html using the mediaStream as a srcObject
+		createVideoElement(mediaStream, sourceId);
+
+		// Finally we project the new source into the transceivers
+		await millicastView.project(sourceId, [
+			{
+				trackId: "video",
+				mediaId: videoTransceiver.mid,
+				media: "video",
+			}, // Optionally we also project audio
+			{
+				trackId: "audio",
+				mediaId: audioTransceiver.mid,
+				media: "audio",
+			},
+		]);
+	};
+
+	const createVideoElement = (mediaStream, sourceId) => {
+		const video = document.createElement("video");
+		// remoteVideos is already created in the HTML
+		const remoteVideos = document.getElementById("remoteVideos");
+		video.id = sourceId || "main";
+		video.srcObject = mediaStream;
+		video.autoplay = true;
+		// We mute the video so autoplay always work, this can be removed (https://developer.chrome.com/blog/autoplay/#new-behaviors)
+		video.muted = true;
+		remoteVideos.appendChild(video);
+	};
+
 	try {
 		// Step 3: Connecting to the Stream.
 		await millicastView.connect(options);
@@ -72,26 +126,6 @@ async function connectStream() {
 		console.log("Connection failed, handle error", e);
 		millicastView.reconnect();
 	}
-
-	// Optional Step: Updating the Livestream latency.
-	millicastView.webRTCPeer.initStats();
-	await millicastView.webRTCPeer.on("stats", (stats) => {
-		console.log(stats)
-		viewers.innerText = "Round Trip Time: " + stats.currentRoundTripTime*1000 + " milliseconds";
-		viewers.hidden = false;
-	});
-}
-
-function stopStream() {
-	//Closes Stream and resets browser.
-	location.reload();
-}
-
-function addStreamToYourVideoTag(elem) {
-	//Adds Stream to the <video> tag.
-	let video = document.getElementById("videoPlayer");
-	video.srcObject = elem;
-	video.autoplay = true;
 }
 
 function enableButton() {
