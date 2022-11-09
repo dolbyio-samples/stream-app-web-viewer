@@ -33,14 +33,14 @@ form {
 	border-style: solid;
 	border-width: 10px;
 	border-color: black;
-	width: 700px;
+	width: 80%;
 }
 .subVidBox {
 	background-color: black;
 	border-style: solid;
 	border-width: 10px;
 	border-color: black;
-	width: 200px;
+	width: 20%;
 	grid-column: auto;
 }
 .statusText {
@@ -87,7 +87,7 @@ form {
 	margin: 1rem;
 }
 #remoteMain{
-width: 700px;
+width: 100%;
 margin: auto;
 
 }

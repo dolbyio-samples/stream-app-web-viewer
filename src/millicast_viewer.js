@@ -67,7 +67,7 @@ async function connectStream() {
 	// Optional Step: Updating the Livestream latency.
 	await millicastView.webRTCPeer.on("stats", (stats) => {
 		console.log(stats);
-		viewers.innerText = "Round Trip Time: " + stats.currentRoundTripTime* 1000 + " milliseconds";
+		viewers.innerText = "Round Trip Time: " + stats.currentRoundTripTime * 1000 + " milliseconds";
 		viewers.hidden = false;
 	});
 
