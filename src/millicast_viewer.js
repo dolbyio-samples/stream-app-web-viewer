@@ -34,12 +34,12 @@ async function connectStream() {
 		});
 
 	const millicastView = new window.millicast.View(streamName, tokenGenerator);
-	const sources = new Set();
 	// This will store a mapping: sourceId => transceiver media ids
 	const sourceIdTransceiversMap = new Map();
 
 	// Optional Step: Live updating the stream status
 	await millicastView.on("broadcastEvent", (event) => {
+		console.log(event.name);
 		const { name, data } = event;
 		console.log(event, "broadcastEvent");
 		switch (name) {
@@ -52,6 +52,7 @@ async function connectStream() {
 				break;
 			case "inactive":
 				activeSources.delete(data.sourceId);
+				unprojectAndRemoveVideo(data.sourceId);
 				if (activeSources.size === 0) {
 					statusBar.innerText = "No active stream ...";
 					statusBar.hidden = false;
@@ -64,17 +65,11 @@ async function connectStream() {
 	});
 
 	// Optional Step: Updating the Livestream latency.
-	millicastView.webRTCPeer.initStats();
 	await millicastView.webRTCPeer.on("stats", (stats) => {
 		console.log(stats);
-		viewers.innerText = "Round Trip Time: " + stats.currentRoundTripTime * 1000 + " milliseconds";
+		viewers.innerText = "Round Trip Time: " + stats.currentRoundTripTime* 1000 + " milliseconds";
 		viewers.hidden = false;
 	});
-
-	function stopStream() {
-		//Closes Stream and resets browser.
-		location.reload();
-	}
 
 	const addStreamToYourVideoTag = async (sourceId) => {
 		// Create Media stream and create transceivers
@@ -88,9 +83,9 @@ async function connectStream() {
 			videoMediaId: videoTransceiver.mid,
 			audioMediaId: audioTransceiver.mid,
 		});
-
+		console.log(sourceIdTransceiversMap.size);
 		// We need to define this function, this function will render a new video tag into the html using the mediaStream as a srcObject
-		createVideoElement(mediaStream, sourceId);
+		createVideoElement(mediaStream, sourceId, sourceIdTransceiversMap.size);
 
 		// Finally we project the new source into the transceivers
 		await millicastView.project(sourceId, [
@@ -106,32 +101,65 @@ async function connectStream() {
 			},
 		]);
 	};
+	const unprojectAndRemoveVideo = async (sourceId) => {
+		// We get the transceivers associated with the source id
+		const sourceTransceivers = sourceIdTransceiversMap.get(sourceId);
+		sourceIdTransceiversMap.delete(sourceId);
+		// We unproject the sources of the transceivers
+		await millicastView.unproject([sourceTransceivers.videoMediaId, sourceTransceivers.audioMediaId]);
+		// Delete the video from the DOM
+		const video = document.getElementById(sourceId);
+		document.getElementById("remoteMain").removeChild(video);
+	};
 
-	const createVideoElement = (mediaStream, sourceId) => {
+	const createVideoElement = (mediaStream, sourceId, vidCount) => {
+		const remoteMain = document.getElementById("remoteMain");
+		const switchView = document.getElementById("switchView");
 		const video = document.createElement("video");
-		// remoteVideos is already created in the HTML
-		const remoteVideos = document.getElementById("remoteVideos");
+		if (vidCount < 2) {
+			console.log("main");
+			video.className = "vidBox";
+		} else {
+			switchView.disabled = false;
+			console.log("sub");
+			video.className = "subVidBox";
+		}
 		video.id = sourceId || "main";
 		video.srcObject = mediaStream;
 		video.autoplay = true;
-		// We mute the video so autoplay always work, this can be removed (https://developer.chrome.com/blog/autoplay/#new-behaviors)
 		video.muted = true;
-		remoteVideos.appendChild(video);
+		remoteMain.appendChild(video);
 	};
 
 	try {
 		// Step 3: Connecting to the Stream.
 		await millicastView.connect(options);
+		millicastView.webRTCPeer.initStats();
 	} catch (e) {
 		console.log("Connection failed, handle error", e);
 		millicastView.reconnect();
 	}
 }
 
+function stopStream() {
+	//Closes Stream and resets browser.
+	location.reload();
+}
+
 function enableButton() {
 	// Enabled the startStream button in the HTML.
 	let streamBtn = document.getElementById("startBtn");
 	streamBtn.disabled = false;
+}
+
+function switchStream() {
+	const remoteMain = document.getElementById("remoteMain");
+	console.log(remoteMain.children);
+	var temp = remoteMain.children[0];
+	temp.className = "subVidBox";
+	remoteMain.removeChild(remoteMain.children[0]);
+	remoteMain.appendChild(temp);
+	remoteMain.children[0].className = "vidBox";
 }
 
 // Listens for changes in the streamName user input box.

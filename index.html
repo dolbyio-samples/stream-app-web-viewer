@@ -21,7 +21,8 @@
 		<a href="https://docs.dolby.io/media-apis/docs/analyze-api-guide">
 			<img src="img/dolbyio.png" alt="Dolby.io Logo" width="200px" height="100px" class="topleft" />
 		</a>
-		<h1>Dolby.io Millicast: Livestream Viewer</h1>
+		<h1>Dolby.io Streaming: Livestream Multi-Viewer</h1>
+	
 		<form id="inputFormVisCont">
 			<label for="fname">Enter Livestream Account ID:</label>
 			<input type="text" id="accID" class="input_box" size="15" /><br /><br />
@@ -31,13 +32,15 @@
 		<button id="startBtn" disabled="True" onclick="connectStream()">Start Stream</button>
 		<button id="stopBtn" disabled="True" onclick="stopStream()">Stop Stream</button>
 		<br />
+		<button id="switchView" disabled="True" onclick="switchStream()">Switch Stream</button>
+		<br />
 		<br />
 		<div>
 			<b id="statusBar" hidden="True" class="statusText"> Status: </b>
 			<b id="viewers" hidden="True" class="statusTime"> Viewers: </b>
 			<br />
 			<br />
-			 <div id="remoteVideos"></div>
+			 <div id="remoteMain" class = "remoteMain"></div>
 		</div>
 		<script src="src/millicast_viewer.js"></script>
 	</body>
