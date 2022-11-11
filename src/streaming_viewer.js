@@ -1,9 +1,9 @@
-//Millicast.js is the brain of the stream viewer, handling all functionality.
-// Learn More @ https://docs.millicast.com/docs/web-draft
+// streaming_viewer.js is the brain of the livestream multi-viewer, handling all functionality.
+// Learn More @ https://docs.dolby.io/streaming-apis/docs/create-multi-view-web-app
 
 async function connectStream() {
 	// Connects the stream and does a majority of the functionality for the app.
-	const activeSources = new Set();
+
 	let viewers = document.getElementById("viewers");
 	let stopBtn = document.getElementById("stopBtn");
 	let accID = document.getElementById("accID").value;
@@ -20,7 +20,7 @@ async function connectStream() {
 	stopBtn.disabled = false;
 	inputFormVisCont.hidden = true;
 
-	// Step 1: Authentication with the Millicast SDK
+	// Step 1: Authentication with the Dolby.io Millicast SDK
 	const options = {
 		disableVideo: false,
 		disableAudio: false,
@@ -33,8 +33,10 @@ async function connectStream() {
 			streamAccountId: accID,
 		});
 
+	// Step 2: Define MillicastView and sourceID mapping
 	const millicastView = new window.millicast.View(streamName, tokenGenerator);
-	// This will store a mapping: sourceId => transceiver media ids
+
+	const activeSources = new Set();
 	const sourceIdTransceiversMap = new Map();
 
 	// Optional Step: Live updating the stream status
@@ -71,29 +73,24 @@ async function connectStream() {
 		viewers.hidden = false;
 	});
 
+	// Step 4: Create and add video streams with sourceId
 	const addStreamToYourVideoTag = async (sourceId) => {
-		// Create Media stream and create transceivers
 		const mediaStream = new MediaStream();
 		const videoTransceiver = await millicastView.addRemoteTrack("video", [mediaStream]);
-		// Optionally we can also add audio
 		const audioTransceiver = await millicastView.addRemoteTrack("audio", [mediaStream]);
 
-		// Add sourceId -> transceiver pair to the Map
 		sourceIdTransceiversMap.set(sourceId || "main", {
 			videoMediaId: videoTransceiver.mid,
 			audioMediaId: audioTransceiver.mid,
 		});
-		console.log(sourceIdTransceiversMap.size);
-		// We need to define this function, this function will render a new video tag into the html using the mediaStream as a srcObject
 		createVideoElement(mediaStream, sourceId, sourceIdTransceiversMap.size);
 
-		// Finally we project the new source into the transceivers
 		await millicastView.project(sourceId, [
 			{
 				trackId: "video",
 				mediaId: videoTransceiver.mid,
 				media: "video",
-			}, // Optionally we also project audio
+			},
 			{
 				trackId: "audio",
 				mediaId: audioTransceiver.mid,
@@ -101,44 +98,62 @@ async function connectStream() {
 			},
 		]);
 	};
-	const unprojectAndRemoveVideo = async (sourceId) => {
-		// We get the transceivers associated with the source id
-		const sourceTransceivers = sourceIdTransceiversMap.get(sourceId);
-		sourceIdTransceiversMap.delete(sourceId);
-		// We unproject the sources of the transceivers
-		await millicastView.unproject([sourceTransceivers.videoMediaId, sourceTransceivers.audioMediaId]);
-		// Delete the video from the DOM
-		const video = document.getElementById(sourceId);
-		document.getElementById("remoteMain").removeChild(video);
-	};
 
+	// Step 5: Add video stream to video element
 	const createVideoElement = (mediaStream, sourceId, vidCount) => {
-		const remoteMain = document.getElementById("remoteMain");
+
+		const feedMain = document.getElementById("feedMain");
 		const switchView = document.getElementById("switchView");
 		const video = document.createElement("video");
+
+		// If feed is the first to be added default it to main view
 		if (vidCount < 2) {
 			console.log("main");
-			video.className = "vidBox";
+			video.className = "vidBox"; //Main view css class
 		} else {
 			switchView.disabled = false;
 			console.log("sub");
-			video.className = "subVidBox";
+			video.className = "subVidBox";// Sub view css class
 		}
+
 		video.id = sourceId || "main";
 		video.srcObject = mediaStream;
 		video.autoplay = true;
+		video.controls = true;
 		video.muted = true;
-		remoteMain.appendChild(video);
+
+		feedMain.appendChild(video);
 	};
 
+	// Step 6: If feed is disconnected remove video element
+	const unprojectAndRemoveVideo = async (sourceId) => {
+		const video = document.getElementById(sourceId);
+		const sourceTransceivers = sourceIdTransceiversMap.get(sourceId);
+
+		sourceIdTransceiversMap.delete(sourceId);
+		await millicastView.unproject([sourceTransceivers.videoMediaId, sourceTransceivers.audioMediaId]);
+		document.getElementById("feedMain").removeChild(video);
+	};
+
+		// Step 3: Connect to stream and add stats
 	try {
-		// Step 3: Connecting to the Stream.
 		await millicastView.connect(options);
 		millicastView.webRTCPeer.initStats();
 	} catch (e) {
 		console.log("Connection failed, handle error", e);
 		millicastView.reconnect();
 	}
+}
+
+//Optional: Functionality for switching stream views between Main and Sub
+function switchStream() {
+	const feedMain = document.getElementById("feedMain");
+	console.log(feedMain.children);
+	var temp = feedMain.children[0];
+	temp.className = "subVidBox";
+	feedMain.removeChild(feedMain.children[0]);
+	feedMain.appendChild(temp);
+	feedMain.children[0].className = "vidBox";
 }
 
 function stopStream() {
@@ -150,16 +165,6 @@ function enableButton() {
 	// Enabled the startStream button in the HTML.
 	let streamBtn = document.getElementById("startBtn");
 	streamBtn.disabled = false;
-}
-
-function switchStream() {
-	const remoteMain = document.getElementById("remoteMain");
-	console.log(remoteMain.children);
-	var temp = remoteMain.children[0];
-	temp.className = "subVidBox";
-	remoteMain.removeChild(remoteMain.children[0]);
-	remoteMain.appendChild(temp);
-	remoteMain.children[0].className = "vidBox";
 }
 
 // Listens for changes in the streamName user input box.
