@@ -1,16 +1,20 @@
 # Dolby.io Streaming Multiview Live Stream App
 [![](https://data.jsdelivr.com/v1/package/npm/@millicast/sdk/badge)](https://www.jsdelivr.com/package/npm/@millicast/sdk)
 
+![Livestream viewer image](img/multiviewer-demo.JPG)
+
 Interested in building this demo? Read the guide:  [Building a WebRTC Live Stream Multiviewer App in vanilla JS.](https://dolby.io/blog/building-a-webrtc-live-stream-multiviewer-app/) 
 
-If you are interested in building a live stream viewer without multiview, [switch to the main branch of this project](https://github.com/dolbyio-samples/blog-millicast-livestream-viewer).
+## Branches
+
+**Main**: If you are interested in building a live stream viewer without multiview, [switch to the main branch of this project](https://github.com/dolbyio-samples/blog-millicast-livestream-viewer).
+
+**Multiviewer**: Current branch.
 
 ## To Run
 1. The whole project is built in vanilla JS, so just clone the repo and open the index.html file in browser.
 
 2. In order to stream multiple views to the app you must enabled multisource streams. [Check out this guide here.](https://dolby.io/blog/enabling-multiview-for-dolby-io-livestreaming/)
-
-![Livestream viewer image](img/multiviewer-demo.JPG)
 
 ## Learn More:
 1. [Dolby.io Streaming](https://dolby.io/products/real-time-streaming/)
