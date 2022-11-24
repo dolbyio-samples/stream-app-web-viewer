@@ -1,9 +1,9 @@
 //Millicast.js is the brain of the stream viewer, handling all functionality.
 // Learn More @ https://docs.millicast.com/docs/web-draft
-const DOLBYIO_STREAMING_ACCOUNT_ID = "tsrKzd";
-const DOLBYIO_STREAMING_STREAM_NAME = "la7cdrh7";
-const PUBNUB_PUBLISH_KEY = "pub-c-892e674d-f941-4342-a2cb-4e72d6a488d1";
-const PUBNUB_SUBSCRIBE_KEY = "sub-c-420c1ac6-0767-4e1a-a8fa-3f8fffd004dc";
+const DOLBYIO_STREAMING_ACCOUNT_ID = "";
+const DOLBYIO_STREAMING_STREAM_NAME = "";
+const PUBNUB_PUBLISH_KEY = "";
+const PUBNUB_SUBSCRIBE_KEY = "";
 
 async function connectStream() {
 	// Connects the stream and does a majority of the functionality for the app.

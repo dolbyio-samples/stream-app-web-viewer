@@ -1,17 +1,19 @@
-# Building a Low Latency Live Stream Viewer w/ Dolby.io Streaming
+# Building a Low Latency Live Stream Viewer w/ Dolby.io Streaming + PubNub Chat
 [![](https://data.jsdelivr.com/v1/package/npm/@millicast/sdk/badge)](https://www.jsdelivr.com/package/npm/@millicast/sdk)
-![Livestream viewer image](img/livestream-demo.PNG)
 
-This code is a suppliment for this blog here: [Building a Low Latency Live Stream Viewer](https://dolby.io/blog/building-a-low-latency-livestream-viewer-with-webrtc-millicast/)
 
 ## Branches
 
-**Main**: Current branch.
+**Main**: If you are interested in building a live stream viewer without a chatroom, switch to the main branch of this project.
+
+**simple-chat**: Current Branch
 
 **Multiviewer**: If you are interested in building a more advanced version of this project that can ingest multiple WebRTC streams [check out this guide here](https://dolby.io/blog/building-a-webrtc-live-stream-multiviewer-app/).
 
 ## To Run
 The whole project is built in vanilla JS, so just clone the repo and open the index.html file in browser.
+
+Make sure to add your own API keys in the millicast_viewer.js file.
 
 ## Learn More:
 1. [Dolby.io Streaming](https://dolby.io/products/real-time-streaming/)
