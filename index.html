@@ -5,7 +5,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-		<title>Dolby.io Millicast: Livestream Viewer</title>
+		<title>Dolby.io Streaming: Livestream Viewer</title>
 		<meta name="description" content="Livestream Viewer" />
 		<meta name="author" content="SitePoint" />
 
@@ -13,6 +13,8 @@
 		<meta property="og:type" content="website" />
 		<meta property="og:description" content="Livestream Viewer" />
 		<script src="https://cdn.jsdelivr.net/npm/@millicast/sdk@latest/dist/millicast.umd.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+		<script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.0.min.js"></script>
 		<link rel="stylesheet" href="index.css" />
 		<link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
 	</head>
@@ -21,26 +23,33 @@
 		<a href="https://docs.dolby.io/media-apis/docs/analyze-api-guide">
 			<img src="img/dolbyio.png" alt="Dolby.io Logo" width="200px" height="100px" class="topleft" />
 		</a>
-		<h1>Dolby.io Millicast: Livestream Viewer</h1>
+		<h1>Dolby.io Streaming x PubNub: Livestream Viewer</h1>
 		<form id="inputFormVisCont">
-			<label for="fname">Enter Livestream Account ID:</label>
-			<input type="text" id="accID" class="input_box" size="15" /><br /><br />
-			<label for="fname">Enter Livestream Name:</label>
-			<input type="text" id="streamName" class="input_box" size="21" /><br /><br />
+			<label for="fname">Enter Username:</label>
+			<input type="text" id="usrName" class="input_box" size="15" /><br /><br />
 		</form>
-		<button id="startBtn" disabled="True" onclick="connectStream()">Start Stream</button>
-		<button id="stopBtn" disabled="True" onclick="stopStream()">Stop Stream</button>
+		<button id="startBtn" disabled="True" onclick="connectStream()">Join Stream</button>
+		<button id="stopBtn" disabled="True" onclick="stopStream()">Leave Stream</button>
 		<br />
 		<br />
-		<div>
-			<b id="statusBar" hidden="True" class="statusText"> Status: </b>
-			<b id="viewers" hidden="True" class="statusTime"> Viewers: </b>
+		<b id="statusBar" hidden="True" class="statusText"> Status: </b>
+		<b id="rtt" hidden="True" class="statusTime"> RTT: </b>
+		<b id="viewers" hidden="True" class="statusText"> Viewers: </b>
+		<br />
+		<div class="wrapper">
 			<br />
 			<br />
 			<video width="640" height="360" hidden="True" id="videoPlayer" controls class="vidBox">
 				Your browser does not support the video playback with the video tag.
 			</video>
+
+			<div id="chatBox" class="chatBox" hidden="True">
+				<div id="outputDiv" class="outputBox"></div>
+				<input id="inputChat" class="messageBox" placeholder="" />
+				<button class="enterButton" id="enterButton">Submit</button>
+			</div>
 		</div>
+
 		<script src="src/millicast_viewer.js"></script>
 	</body>
 </html>

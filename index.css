@@ -33,6 +33,11 @@ form {
 	border-style: solid;
 	border-width: 10px;
 	border-color: black;
+	margin: 5px;
+	flex: 1;
+
+	float:left; 
+	display:inline;
 }
 .statusText {
 	background-color: #1c87c9;
@@ -70,4 +75,57 @@ form {
 	font-family: sans-serif;
 	font-size: 15px;
 	padding: 5px 5px;
+}
+.wrapper{
+	display: inline-flex;
+	margin: 5px;
+}
+.chatBox {
+	flex: 2;
+	margin: 5px;
+	border-color: #ff0000;
+
+}
+.outputBox{
+	background:black;
+	min-height: 360px;
+	font-size: small;
+	font-family: sans-serif, Tahoma, Geneva, Verdana, sans-serif;
+	padding: 5px;
+	max-height: 360px;
+	overflow: scroll;
+	overflow-x: hidden;
+	max-width: 250px;
+
+
+}
+.messageBox {
+	vertical-align: bottom;
+	max-height: 20px;
+}
+.enterButton{
+	max-height: 25px;
+}
+.messageThem{
+	margin-top: 8px;
+	background-color: blue;
+	color: white;
+}
+.messageYou{
+	max-width: 100%;
+	margin-top: 8px;
+	background-color: white;
+	color: Black;
+	
+}
+.messageAdmin{
+	margin-bottom: 10px;
+	font-weight:Bold ;
+
+}
+.youText{
+	font-size: smaller;
+}
+.messageTime{
+	font-size: smaller;
 }

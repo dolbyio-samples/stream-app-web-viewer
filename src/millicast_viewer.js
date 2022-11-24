@@ -1,21 +1,26 @@
 //Millicast.js is the brain of the stream viewer, handling all functionality.
 // Learn More @ https://docs.millicast.com/docs/web-draft
+const DOLBYIO_STREAMING_ACCOUNT_ID = "tsrKzd";
+const DOLBYIO_STREAMING_STREAM_NAME = "la7cdrh7";
+const PUBNUB_PUBLISH_KEY = "pub-c-892e674d-f941-4342-a2cb-4e72d6a488d1";
+const PUBNUB_SUBSCRIBE_KEY = "sub-c-420c1ac6-0767-4e1a-a8fa-3f8fffd004dc";
 
 async function connectStream() {
 	// Connects the stream and does a majority of the functionality for the app.
 	const activeSources = new Set();
+	let rtt = document.getElementById("rtt");
 	let viewers = document.getElementById("viewers");
 	let stopBtn = document.getElementById("stopBtn");
-	let accID = document.getElementById("accID").value;
+	let chatBox = document.getElementById("chatBox");
+	let usrName = document.getElementById("usrName").value;
 	let video = document.getElementById("videoPlayer");
 	let streamBtn = document.getElementById("startBtn");
 	let statusBar = document.getElementById("statusBar");
-	let streamName = document.getElementById("streamName").value;
 	let inputFormVisCont = document.getElementById("inputFormVisCont");
 
 	console.log("Joining livestream with:");
-	console.log("Account ID: " + accID);
-	console.log("Stream Name: " + streamName);
+	console.log("Account ID: " + DOLBYIO_STREAMING_ACCOUNT_ID);
+	console.log("Stream Name: " + DOLBYIO_STREAMING_STREAM_NAME);
 	video.hidden = false;
 	streamBtn.disabled = true;
 	stopBtn.disabled = false;
@@ -30,11 +35,11 @@ async function connectStream() {
 
 	const tokenGenerator = () =>
 		window.millicast.Director.getSubscriber({
-			streamName: streamName,
-			streamAccountId: accID,
+			streamName: DOLBYIO_STREAMING_STREAM_NAME,
+			streamAccountId: DOLBYIO_STREAMING_ACCOUNT_ID,
 		});
 
-	const millicastView = new window.millicast.View(streamName, tokenGenerator);
+	const millicastView = new window.millicast.View(DOLBYIO_STREAMING_STREAM_NAME, tokenGenerator);
 
 	// Step 2: Adding the Stream to your <video> tag
 	millicastView.on("track", (event) => {
@@ -49,7 +54,7 @@ async function connectStream() {
 			case "active":
 				activeSources.add(data.sourceId);
 				console.log("Active Stream.");
-				statusBar.innerText = streamName + " is Live";
+				statusBar.innerText = DOLBYIO_STREAMING_STREAM_NAME + " is Live";
 				statusBar.hidden = false;
 				break;
 			case "inactive":
@@ -65,6 +70,94 @@ async function connectStream() {
 		}
 	});
 
+	// Step 4: Connect to PubNub Chat ConnectChat
+
+	var countTx = 0,
+		countRx = 0,
+		id = usrName;
+	console.log("HEHEHEHH");
+	chatBox.hidden = false;
+	(function () {
+		var pubnub = new PubNub({
+			publishKey: PUBNUB_PUBLISH_KEY,
+			subscribeKey: PUBNUB_SUBSCRIBE_KEY,
+			userId: id,
+		});
+
+		pubnub.subscribe({
+			// Subscribe to user presence
+			channels: ["active"],
+			withPresence: true,
+		});
+		var box = document.getElementById("outputDiv"),
+			inputText = document.getElementById("inputChat"),
+			inputButton = document.getElementById("enterButton"),
+			channel = "10chat";
+
+		box.innerHTML += newRow("Welcome to the Stream: " + DOLBYIO_STREAMING_STREAM_NAME, "Admin");
+		box.innerHTML += newRow("You've Joined as: " + id, "Admin");
+		pubnub.subscribe({ channels: [channel] });
+		pubnub.addListener({
+			message: function (m) {
+				box.innerHTML += newRow(m.message, m.publisher);
+				box.scrollTop = box.scrollHeight;
+			},
+		});
+		inputText.addEventListener("keypress", function (e) {
+			(e.keyCode || e.charCode) === 13 &&
+				inputText.value != "" &&
+				pubnub.publish({
+					channel: channel,
+					message: inputText.value,
+					x: (inputText.value = ""),
+				});
+		});
+		inputButton.addEventListener("click", function (e) {
+			inputText.value != "" &&
+				pubnub.publish({
+					channel: channel,
+					message: inputText.value,
+					x: (inputText.value = ""),
+				});
+		});
+
+		pubnub.addListener({
+			presence: (presenceEvent) => {
+				if (presenceEvent.occupancy == 0) {
+					viewers.innerText = "1 Viewer";
+				} else {
+					viewers.hidden = false;
+					viewers.innerText = presenceEvent.occupancy + " Viewers";
+				}
+			},
+		});
+	})();
+
+	hljs.highlightAll();
+
+	function newRow(m, publisher) {
+		var date = "<br><span class='messageTime'>" + new Date().toLocaleString() + "</span>";
+		var youId = "";
+		var messageClass = "messageThem";
+		var messageChat = ("" + m).replace(/[<>]/g, "");
+
+		if (id === publisher) {
+			youId = "<span class='youText'> (You)</span>";
+			messageClass = "messageThem";
+			countTx++;
+		} else if (publisher == "Admin") {
+			youId = "<span class='youText'> (You)</span>";
+			messageClass = "messageAdmin";
+			countTx++;
+			return "<div class='" + messageClass + "'>" + messageChat + "</div>";
+		} else {
+			youId = "<span class='youText'> (" + publisher + ")</span>";
+			messageClass = "messageYou";
+			countRx++;
+		}
+		return "<div class='" + messageClass + "'>" + messageChat + date + youId +"</div>";
+	}
+
 	try {
 		// Step 3: Connecting to the Stream.
 		await millicastView.connect(options);
@@ -76,9 +169,9 @@ async function connectStream() {
 	// Optional Step: Updating the Livestream latency.
 	millicastView.webRTCPeer.initStats();
 	await millicastView.webRTCPeer.on("stats", (stats) => {
-		console.log(stats)
-		viewers.innerText = "Round Trip Time: " + stats.currentRoundTripTime*1000 + " milliseconds";
-		viewers.hidden = false;
+		console.log(stats);
+		rtt.innerText = "Round Trip Time: " + stats.currentRoundTripTime * 1000 + " milliseconds";
+		rtt.hidden = false;
 	});
 }
 
@@ -101,4 +194,4 @@ function enableButton() {
 }
 
 // Listens for changes in the streamName user input box.
-document.getElementById("streamName").addEventListener("change", enableButton, false);
+document.getElementById("usrName").addEventListener("change", enableButton, false);
