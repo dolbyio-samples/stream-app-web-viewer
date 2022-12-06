@@ -96,8 +96,6 @@ form {
 	overflow: scroll;
 	overflow-x: hidden;
 	max-width: 250px;
-
-
 }
 .messageBox {
 	vertical-align: bottom;
@@ -106,26 +104,24 @@ form {
 .enterButton{
 	max-height: 25px;
 }
-.messageThem{
+.messageSent{
 	margin-top: 8px;
 	background-color: blue;
 	color: white;
 }
-.messageYou{
+.messageReceived{
 	max-width: 100%;
 	margin-top: 8px;
 	background-color: white;
 	color: Black;
 	
 }
-.messageAdmin{
-	margin-bottom: 10px;
-	font-weight:Bold ;
-
-}
-.youText{
-	font-size: smaller;
-}
 .messageTime{
 	font-size: smaller;
 }
+.messageAdmin{
+	margin-bottom: 10px;
+	font-weight:Bold ;
+}
+
+

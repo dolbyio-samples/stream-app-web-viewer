@@ -8,7 +8,7 @@ const PUBNUB_SUBSCRIBE_KEY = "";
 async function connectStream() {
 	// Connects the stream and does a majority of the functionality for the app.
 	const activeSources = new Set();
-	let rtt = document.getElementById("rtt");
+	let rtt = document.getElementById("rtt"); //round trip time
 	let viewers = document.getElementById("viewers");
 	let stopBtn = document.getElementById("stopBtn");
 	let chatBox = document.getElementById("chatBox");
@@ -26,7 +26,7 @@ async function connectStream() {
 	stopBtn.disabled = false;
 	inputFormVisCont.hidden = true;
 
-	// Step 1: Authentication with the Millicast SDK
+	// Step 1: Authentication with the Dolby.io Streaming SDK
 	const options = {
 		disableVideo: false,
 		disableAudio: false,
@@ -71,38 +71,34 @@ async function connectStream() {
 	});
 
 	// Step 4: Connect to PubNub Chat ConnectChat
-
-	var countTx = 0,
-		countRx = 0,
-		id = usrName;
-	console.log("HEHEHEHH");
-	chatBox.hidden = false;
 	(function () {
+		chatBox.hidden = false;
 		var pubnub = new PubNub({
 			publishKey: PUBNUB_PUBLISH_KEY,
 			subscribeKey: PUBNUB_SUBSCRIBE_KEY,
-			userId: id,
+			userId: usrName,
 		});
 
-		pubnub.subscribe({
-			// Subscribe to user presence
-			channels: ["active"],
-			withPresence: true,
-		});
 		var box = document.getElementById("outputDiv"),
 			inputText = document.getElementById("inputChat"),
 			inputButton = document.getElementById("enterButton"),
-			channel = "10chat";
+			channel = "dlbChat";
 
-		box.innerHTML += newRow("Welcome to the Stream: " + DOLBYIO_STREAMING_STREAM_NAME, "Admin");
-		box.innerHTML += newRow("You've Joined as: " + id, "Admin");
+		box.innerHTML += newChat("Welcome to the Stream: " + DOLBYIO_STREAMING_STREAM_NAME, "Admin");
+		box.innerHTML += newChat("You've Joined as: " + usrName, "Admin");
+
+		// Subscribe to the dblChat
 		pubnub.subscribe({ channels: [channel] });
+
+		// Listen for messages being added, update the UI accordingly
 		pubnub.addListener({
 			message: function (m) {
-				box.innerHTML += newRow(m.message, m.publisher);
+				box.innerHTML += newChat(m.message, m.publisher);
 				box.scrollTop = box.scrollHeight;
 			},
 		});
+
+		// Listen for enter key
 		inputText.addEventListener("keypress", function (e) {
 			(e.keyCode || e.charCode) === 13 &&
 				inputText.value != "" &&
@@ -112,6 +108,7 @@ async function connectStream() {
 					x: (inputText.value = ""),
 				});
 		});
+		//Listen for users clicking submit button
 		inputButton.addEventListener("click", function (e) {
 			inputText.value != "" &&
 				pubnub.publish({
@@ -121,6 +118,7 @@ async function connectStream() {
 				});
 		});
 
+		//Optional for updating the viewer widget
 		pubnub.addListener({
 			presence: (presenceEvent) => {
 				if (presenceEvent.occupancy == 0) {
@@ -133,29 +131,26 @@ async function connectStream() {
 		});
 	})();
 
-	hljs.highlightAll();
-
-	function newRow(m, publisher) {
-		var date = "<br><span class='messageTime'>" + new Date().toLocaleString() + "</span>";
+	// Style message and assign it the appropriate CSS class
+	function newChat(message, publisher) {
 		var youId = "";
-		var messageClass = "messageThem";
-		var messageChat = ("" + m).replace(/[<>]/g, "");
+		var messageClass = "messageSent";
+		var messageChat = ("" + message).replace(/[<>]/g, "");
+		var date = "<br><span class='messageTime'>" + new Date().toLocaleString() + "</span>";
 
-		if (id === publisher) {
-			youId = "<span class='youText'> (You)</span>";
-			messageClass = "messageThem";
-			countTx++;
+		if (usrName === publisher) {
+			youId = "<span> (You)</span>";
+			messageClass = "messageSent"; // For messages you send
 		} else if (publisher == "Admin") {
-			youId = "<span class='youText'> (You)</span>";
-			messageClass = "messageAdmin";
-			countTx++;
+			youId = "<span> (You)</span>";
+			messageClass = "messageAdmin"; // For chat join message
+
 			return "<div class='" + messageClass + "'>" + messageChat + "</div>";
 		} else {
-			youId = "<span class='youText'> (" + publisher + ")</span>";
-			messageClass = "messageYou";
-			countRx++;
+			youId = "<span'> (" + publisher + ")</span>";
+			messageClass = "messageReceived"; // For messages you receive
 		}
-		return "<div class='" + messageClass + "'>" + messageChat + date + youId +"</div>";
+		return "<div class='" + messageClass + "'>" + messageChat + date + youId + "</div>";
 	}
 
 	try {
