@@ -9,6 +9,8 @@ Interested in building this demo? Read the guide:  [Building a WebRTC Live Strea
 
 **Main**: If you are interested in building a live stream viewer without multiview, [switch to the main branch of this project](https://github.com/dolbyio-samples/blog-millicast-livestream-viewer).
 
+**Simple-chat**: A live stream app with a basic chatroom powered by PubNub In-App Chat. To learn more [check out this guide here](https://dolby.io/blog/adding-pubnub-in-app-chat-to-your-webrtc-live-stream-app/).
+
 **Multiviewer**: Current branch.
 
 ## To Run
