@@ -2,7 +2,7 @@
 [![](https://data.jsdelivr.com/v1/package/npm/@millicast/sdk/badge)](https://www.jsdelivr.com/package/npm/@millicast/sdk)
 
 ![livestream with chat image](img/pubnub-dolbyio-chat.JPG)
-This code is a suppliment for this blog here: [Building a Low Latency Live Stream Viewer](https://dolby.io/blog/building-a-low-latency-livestream-viewer-with-webrtc-millicast/)
+This code is a suppliment for [this guide here on adding PubNub In-App Chat to a Dolby.io Live Stream App](https://dolby.io/blog/adding-pubnub-in-app-chat-to-your-webrtc-live-stream-app/).
 
 ## Branches
 
