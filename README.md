@@ -10,6 +10,13 @@
 
 This code is a suppliment for this blog here: [Building a Low Latency Live Stream Viewer](https://dolby.io/blog/building-a-low-latency-livestream-viewer-with-webrtc-millicast/)
 
+## Branches
+
+**Main**: Current branch.
+
+**Simple-chat**: A live stream app with a basic chatroom powered by PubNub In-App Chat. To learn more switch branches and [check out this guide here](https://dolby.io/blog/adding-pubnub-in-app-chat-to-your-webrtc-live-stream-app/).
+
+**Multiviewer**: If you are interested in building a more advanced version of this project that can ingest multiple WebRTC streams switch branches and [check out this guide here](https://dolby.io/blog/building-a-webrtc-live-stream-multiviewer-app/).
 
 ## Requirements 
 Requires a code editor and a [Dolby.io account](https://dashboard.dolby.io/signup). The project is built with vanilla JS.
@@ -23,13 +30,6 @@ For a more detailed guide [check out the blog](https://dolby.io/blog/building-a-
 4. Clone the repo. Since the project is built in Vanilla JS you can just open the index.html file to run the project.
 5. Inside the app add the Account ID and Stream Name from the token created in step 2.
 6. Enjoy the stream!
-## Branches
-
-**Main**: Current branch.
-
-**Simple-chat**: A live stream app with a basic chatroom powered by PubNub In-App Chat. To learn more switch branches and [check out this guide here](https://dolby.io/blog/adding-pubnub-in-app-chat-to-your-webrtc-live-stream-app/).
-
-**Multiviewer**: If you are interested in building a more advanced version of this project that can ingest multiple WebRTC streams switch branches and [check out this guide here](https://dolby.io/blog/building-a-webrtc-live-stream-multiviewer-app/).
 
 ## Report a Bug 
 In the case any bugs occur, report it using Github issues, and we will see to it. 
