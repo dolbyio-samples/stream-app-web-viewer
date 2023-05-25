@@ -27,9 +27,9 @@ For a more detailed guide [check out the blog](https://dolby.io/blog/building-a-
 
 **Main**: Current branch.
 
-**Simple-chat**: A live stream app with a basic chatroom powered by PubNub In-App Chat. To learn more [check out this guide here](https://dolby.io/blog/adding-pubnub-in-app-chat-to-your-webrtc-live-stream-app/).
+**Simple-chat**: A live stream app with a basic chatroom powered by PubNub In-App Chat. To learn more switch branches and [check out this guide here](https://dolby.io/blog/adding-pubnub-in-app-chat-to-your-webrtc-live-stream-app/).
 
-**Multiviewer**: If you are interested in building a more advanced version of this project that can ingest multiple WebRTC streams [check out this guide here](https://dolby.io/blog/building-a-webrtc-live-stream-multiviewer-app/).
+**Multiviewer**: If you are interested in building a more advanced version of this project that can ingest multiple WebRTC streams switch branches and [check out this guide here](https://dolby.io/blog/building-a-webrtc-live-stream-multiviewer-app/).
 
 ## Report a Bug 
 In the case any bugs occur, report it using Github issues, and we will see to it. 
